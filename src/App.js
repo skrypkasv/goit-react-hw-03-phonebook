@@ -10,6 +10,25 @@ class App extends Component {
     contacts: [],
     filter: '',
   };
+  componentDidMount() {
+    const contacts = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(contacts);
+    if (parsedContacts) {
+      this.setState({ contacts: parsedContacts });
+    }
+  }
+  componentDidUpdate(prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      this.makeLocalStorageRecord();
+    }
+  }
+  makeLocalStorageRecord = () => {
+    localStorage.setItem(
+      'contacts',
+      JSON.stringify(this.state.contacts),
+    );
+  };
+
   addContact = state => {
     const { name, number } = state;
     const contact = {
@@ -54,10 +73,6 @@ class App extends Component {
         .includes(filter.toLowerCase()),
     );
   };
-
-  componentDidUpdate(prevProps, prevState) {
-    console.log('App didUpdate');
-  }
 
   render() {
     const { filter } = this.state;
